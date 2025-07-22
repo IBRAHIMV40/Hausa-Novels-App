@@ -22,12 +22,12 @@
             height: 38px;
             background: linear-gradient(to right, #004d00, #00b300);
             display: flex;
-            border: 1px solid #ccc;
+            border: 1px solid #;
             border-radius: 0px;
             flex-direction: column;
             align-items: center;
             padding: 4px 0px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             z-index: 1000;
         }
         .header-top {
@@ -910,6 +910,7 @@ footer.hide {
         }
 </style>
 </head>
+<meta name="monetag" content="b484832da94ecade870294d210177eba">
 <body>
     <header>
     <div class="header-top">
@@ -2354,7 +2355,7 @@ setTimeout(() => {
       const bar = document.getElementById('notification-bar');
       bar.style.opacity = '1';
       bar.style.pointerEvents = 'auto'; // Enable interaction once visible
-    }, 1500); // Show after 40 seconds
+    }, 15000000000); // Show after 40 seconds
 
     function closeNotification() {
       const bar = document.getElementById('notification-bar');
@@ -2362,7 +2363,7 @@ setTimeout(() => {
       bar.style.pointerEvents = 'none'; // Disable interaction immediately
       setTimeout(() => {
         bar.remove(); // Fully remove from DOM
-      }, 5000); // Allow fade-out to complete
+      }, 5000000000); // Allow fade-out to complete
     }
         
         const videos = [
@@ -2572,4 +2573,174 @@ const partnersData = [
 
     </script>
 </body>
+<script>
+  const style = document.createElement("style");
+  style.textContent = `
+  .ad-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: none; align-items: center; justify-content: center;
+    z-index: 9999;
+  }
+  .ad-popup {
+    position: relative;
+    width: 100%; max-width: 320px;
+    border-radius: 15px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.1);
+    padding: 10px;
+  }
+  .ad-popup img#adImage {
+    width: 100%; height: auto;
+    border-radius: 12px;
+    display: block;
+  }
+  .ad-popup iframe#adIframe {
+    width: 100%; height: 280px;
+    border: none; border-radius: 8px;
+    display: block; background: #000;
+  }
+  .close-btn {
+    position: absolute; top: 11px; right: 10px;
+    background: rgba(0, 0, 0, 0.1);
+    color: white; border: none; font-size: 18px;
+    cursor: pointer; border-radius: 50%; padding: 2px 8px;
+    z-index: 2;
+  }
+  #adTimer {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 6px 12px;
+    margin-top: 8px;
+    border-radius: 10px;
+    font-weight: bold;
+    display: flex; align-items: center; justify-content: center;
+    gap: 5px;
+  }
+  #skipButton, #visitButton {
+    padding: 8px 15px;
+    border: none; border-radius: 8px;
+    border: 1px solid #333;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 5px 5px 0;
+  }
+  #skipButton {
+    background: #ffcc00;
+    color: #000;
+    display: none;
+  }
+  #visitButton {
+    background: #00b300;
+    color: white;
+    display: none;
+  }
+  `;
+  document.head.appendChild(style);
+
+  const overlayHTML = `
+    <div class="ad-overlay" id="adOverlay">
+      <div class="ad-popup" id="adPopup" onclick="goToAdLink()">
+        <button class="close-btn" onclick="closeAd(event)">✖</button>
+        <img id="adImage" style="display: none;" />
+        <iframe id="adIframe" allow="autoplay; encrypted-media" allowfullscreen style="display: none;"></iframe>
+        <div id="adTimer">📢 Ad • 5 seconds</div>
+        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+          <button id="skipButton" onclick="closeAd(event)">Skip Ad</button>
+          <button id="visitButton" onclick="visitAd(event)">Visit Site</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML("beforeend", overlayHTML);
+
+  const ads = [
+    {
+      type: "image",
+      image: "https://bit.ly/4gHMJHL",
+      link: "https://true-click.pro/a/44J1UBOggfxOkx",
+      visitText: "Install"
+    },
+    {
+      type: "image",
+      image: "https://bit.ly/49TAXap",
+      link: "https://true-click.pro/a/44J1UBOggfxOkx",
+      visitText: "Learn more"
+    },
+    {
+      type: "youtube",
+      youtube: "https://www.youtube.com/embed/UHkue_HukXU?autoplay=1&mute=0&enablejsapi=1",
+      link: "https://true-click.pro/a/44J1UBOggfxOkx",
+      visitText: "Visit Site"
+    }
+  ];
+
+  let currentOverlayAdIndex = localStorage.getItem("currentAdIndex") ? parseInt(localStorage.getItem("currentAdIndex")) : 0;
+  const popupInterval = 3000000;
+  const skipDelay = 15;
+
+  function showOverlayAd() {
+    const ad = ads[currentOverlayAdIndex];
+    const adOverlay = document.getElementById("adOverlay");
+    const adImage = document.getElementById("adImage");
+    const adIframe = document.getElementById("adIframe");
+    const timerText = document.getElementById("adTimer");
+    const skipBtn = document.getElementById("skipButton");
+    const visitBtn = document.getElementById("visitButton");
+
+    adOverlay.style.display = "flex";
+    adImage.style.display = "none";
+    adIframe.style.display = "none";
+    skipBtn.style.display = "none";
+    visitBtn.style.display = "none";
+
+    if (ad.type === "image") {
+      adImage.src = ad.image;
+      adImage.style.display = "block";
+    } else if (ad.type === "youtube") {
+      adIframe.src = ad.youtube;
+      adIframe.style.display = "block";
+    }
+
+    visitBtn.textContent = ad.visitText || "Visit Site";
+
+    let secondsLeft = skipDelay;
+    timerText.innerHTML = `📢 Ad • ${secondsLeft} seconds`;
+
+    const timer = setInterval(() => {
+      secondsLeft--;
+      timerText.innerHTML = `📢 Ad • ${secondsLeft} seconds`;
+      if (secondsLeft <= 0) {
+        skipBtn.style.display = "inline-block";
+        visitBtn.style.display = "inline-block";
+        clearInterval(timer);
+      }
+    }, 1000);
+
+    currentOverlayAdIndex = (currentOverlayAdIndex + 1) % ads.length;
+    localStorage.setItem("currentAdIndex", currentOverlayAdIndex);
+  }
+
+  function closeAd(e) {
+    e.stopPropagation();
+    document.getElementById("adOverlay").style.display = "none";
+    document.getElementById("adIframe").src = "";
+  }
+
+  function visitAd(e) {
+    e.stopPropagation();
+    const index = (currentOverlayAdIndex - 1 + ads.length) % ads.length;
+    window.open(ads[index].link, "_blank");
+  }
+
+  function goToAdLink() {
+    const index = (currentOverlayAdIndex - 1 + ads.length) % ads.length;
+    window.open(ads[index].link, "_blank");
+  }
+
+  showOverlayAd();
+  setInterval(showOverlayAd, popupInterval);
+</script>
 </html>
